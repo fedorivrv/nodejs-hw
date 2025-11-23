@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 
-import { connectMongoDB } from './db/connectMongoDb.js';
+import { connectMongoDB } from './db/connectMongoDB.js';
 import notesRoutes from './routes/notesRoutes.js';
 
 import { logger } from './middleware/logger.js';
