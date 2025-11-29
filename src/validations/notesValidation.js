@@ -28,7 +28,7 @@ export const createNoteSchema =  {
   title: Joi.string().min(1),
   content: Joi.string().allow(''),
   tag: Joi.string().valid(...TAGS),
-});
+}),
 };
 
 export const updateNoteSchema = {
