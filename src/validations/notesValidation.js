@@ -12,20 +12,24 @@ export const getAllNotesSchema = {
 };
 
 const objectIdValidator = (value, helpers) => {
-  return !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
+  return isValidObjectId(value)
+    ? value
+    : helpers.error('any.invalid', { message: 'Invalid id format' });
 };
 
 export const noteIdSchema = {
   [Segments.PARAMS]: Joi.object({
-    studentId: Joi.string().custom(objectIdValidator).required(),
+    noteId: Joi.string().custom(objectIdValidator).required(),
   }),
 };
 
-export const createNoteSchema = Joi.object({
+export const createNoteSchema =  {
+   [Segments.BODY]:Joi.object({
   title: Joi.string().min(1),
   content: Joi.string().allow(''),
   tag: Joi.string().valid(...TAGS),
 });
+};
 
 export const updateNoteSchema = {
   [Segments.PARAMS]: Joi.object({
