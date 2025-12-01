@@ -3,33 +3,37 @@ import createHttpError from 'http-errors';
 
 // Отримати список усіх нотаток
 export const getAllNotes = async (req, res) => {
-  const { page, perPage, tag, search } = req.query;
+  const { page = 1, perPage = 10, tag, search } = req.query;
 
   const skip = (page - 1) * perPage;
 
-  const notesQuery = Note.find();
-
-  const [totalItems, notes] = await Promise.all([
-    notesQuery.clone().countDocuments(),
-    notesQuery.skip(skip).limit(perPage),
-  ]);
-
-  const totalPages = Math.ceil(totalItems / perPage);
+  let baseQuery = Note.find();
 
   if (tag) {
-    notesQuery.where('tag').equals(tag);
+    baseQuery = baseQuery.where("tag").equals(tag);
   }
+
   if (search) {
-    notesQuery
+    baseQuery = baseQuery
       .where({ $text: { $search: search } })
-      .select({ score: { $meta: 'textScore' } })
-      .sort({ score: { $meta: 'textScore' } });
+      .select({ score: { $meta: "textScore" } })
+      .sort({ score: { $meta: "textScore" } });
   }
+
+  const countQuery = baseQuery.clone();
+  const pageQuery = baseQuery.clone().skip(skip).limit(perPage).lean();
+
+  const [totalNotes, notes] = await Promise.all([
+    countQuery.countDocuments(),
+    pageQuery
+  ]);
+
+  const totalPages = Math.ceil(totalNotes / perPage);
 
   res.status(200).json({
     page,
     perPage,
-    totalItems,
+    totalNotes,
     totalPages,
     notes,
   });
