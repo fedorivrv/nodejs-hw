@@ -10,14 +10,14 @@ export const getAllNotes = async (req, res) => {
   let baseQuery = Note.find({ userId: req.user._id });
 
   if (tag) {
-    baseQuery = baseQuery.where("tag").equals(tag);
+    baseQuery = baseQuery.where('tag').equals(tag);
   }
 
   if (search) {
     baseQuery = baseQuery
       .where({ $text: { $search: search } })
-      .select({ score: { $meta: "textScore" } })
-      .sort({ score: { $meta: "textScore" } });
+      .select({ score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' } });
   }
 
   const countQuery = baseQuery.clone();
@@ -25,7 +25,7 @@ export const getAllNotes = async (req, res) => {
 
   const [totalNotes, notes] = await Promise.all([
     countQuery.countDocuments(),
-    pageQuery
+    pageQuery,
   ]);
 
   const totalPages = Math.ceil(totalNotes / perPage);
@@ -60,7 +60,7 @@ export const createNote = async (req, res) => {
   const note = await Note.create({
     ...req.body,
     userId: req.user._id,
-    });
+  });
   res.status(201).json(note);
 };
 
@@ -82,9 +82,10 @@ export const deleteNote = async (req, res, next) => {
 export const updateNote = async (req, res, next) => {
   const { noteId } = req.params;
 
-  const note = await Note.findOneAndUpdate({ _id: noteId, userId: req.user._id },
+  const note = await Note.findOneAndUpdate(
+    { _id: noteId, userId: req.user._id },
     req.body,
-    { new: true }
+    { new: true },
   );
 
   if (!note) {
