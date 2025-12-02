@@ -29,6 +29,6 @@ router.post(
 router.post(
   '/auth/reset-password',
   celebrate(resetPasswordSchema),
-  resetPassword
+  resetPassword,
 );
 export default router;

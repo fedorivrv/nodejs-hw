@@ -144,7 +144,7 @@ export const requestResetEmail = async (req, res, next) => {
 };
 
 export const resetPassword = async (req, res, next) => {
-	const { token, password } = req.body;
+  const { token, password } = req.body;
 
   let payload;
   try {
@@ -154,17 +154,14 @@ export const resetPassword = async (req, res, next) => {
     return;
   }
 
-  const user = await User.findOne({  _id: payload.sub,  email: payload.email });
+  const user = await User.findOne({ _id: payload.sub, email: payload.email });
   if (!user) {
     next(createHttpError(404, 'User not found'));
     return;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  await User.updateOne(
-	  { _id: user._id },
-	  { password: hashedPassword }
-  );
+  await User.updateOne({ _id: user._id }, { password: hashedPassword });
 
   await Session.deleteMany({ userId: user._id });
 
