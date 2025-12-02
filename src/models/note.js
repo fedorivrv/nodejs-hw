@@ -4,7 +4,7 @@ import { TAGS } from '../constants/tags.js';
 
 const noteSchema = new Schema(
   {
-    userID: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -21,7 +21,6 @@ const noteSchema = new Schema(
     },
     tag: {
       type: String,
-      required: true,
       enum: [...TAGS],
       default: 'Todo',
     },
