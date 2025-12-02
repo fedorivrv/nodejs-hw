@@ -21,7 +21,7 @@ const userSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-User.pre('save', function (next) {
+userSchema.pre('save', function (next) {
   if (!this.username) {
     this.username = this.email;
   }
